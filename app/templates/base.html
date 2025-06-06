@@ -28,6 +28,19 @@
     {% block css %}{% endblock %}
 </head>
 <body>
+
+    <!-- Menu de Acessibilidade -->
+    <div id="acessibilidade-container" style="position: fixed; top: 10px; right: 10px; z-index: 9999;">
+        <button onclick="toggleAcessibilidadeMenu()" style="background: none; border: none; cursor: pointer;" aria-label="Abrir menu de acessibilidade">
+            <img src="{{ url_for('static', filename='images/accessibility-icon.png') }}" alt="Acessibilidade" width="32" height="32">
+        </button>
+        <div id="acessibilidade-menu" style="display: none; background: white; border: 1px solid #ccc; padding: 10px; margin-top: 5px; border-radius: 8px;">
+            <button onclick="alterarFonte('aumentar')" style="margin: 5px;">A+</button>
+            <button onclick="alterarFonte('diminuir')" style="margin: 5px;">A-</button>
+            <button onclick="alterarFonte('resetar')" style="margin: 5px;">Reset</button>
+        </div>
+    </div>
+
     {% include 'components/header.html' %}
     
     <main class="main-content">
@@ -48,6 +61,32 @@
     
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block js %}{% endblock %}
+
+    <!-- Script da Acessibilidade -->
+    <script>
+        function toggleAcessibilidadeMenu() {
+            const menu = document.getElementById('acessibilidade-menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function alterarFonte(acao) {
+            const elementos = document.querySelectorAll('body, body *');
+            elementos.forEach(el => {
+                const estilo = window.getComputedStyle(el);
+                let tamanhoAtual = parseFloat(estilo.fontSize);
+                if (!tamanhoAtual) return;
+                if (acao === 'aumentar') {
+                    tamanhoAtual *= 1.1;
+                } else if (acao === 'diminuir') {
+                    tamanhoAtual *= 0.9;
+                } else if (acao === 'resetar') {
+                    el.style.fontSize = '';
+                    return;
+                }
+                el.style.fontSize = tamanhoAtual + 'px';
+            });
+        }
+    </script>
 
 </body>
 </html>
